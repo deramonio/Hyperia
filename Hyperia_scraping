@@ -1,0 +1,40 @@
+from bs4 import BeautifulSoup
+import requests
+import re
+import json
+
+zaciatok = "https://www.hyperia.sk/kariera"
+def getHTMLdocument(zaciatok):
+    response = requests.get(zaciatok)
+    return response.text
+
+vsetky_linky= []
+html_document = getHTMLdocument(zaciatok)
+soup = BeautifulSoup(html_document, "html.parser")
+
+for link in soup.find_all("a", attrs={'href',"arrow-link", }):
+    vsetky_linky.append(link.get("href"))
+
+
+vsetky_linky.pop()
+urls = []
+for x in vsetky_linky:
+    urls.append("https://www.hyperia.sk"+x)
+    
+zoznam_ponuk = []
+for url in urls:
+    req = requests.get(url)
+    req.encoding = "utf-8-sig"
+    polievka = BeautifulSoup(req.text, "html.parser")
+    ponuka = {
+    "title": polievka.h1.text,
+    "place": polievka.select_one('img[alt="place"] + p br').next,
+    "salary": polievka.select_one('img[alt="wage"] + p br').next,
+    "contract_type": polievka.select_one('img[alt="work"] + p br').next,
+    "contact_email": polievka.select_one('a[href^="mailto"]').get('href').split(':')[-1]
+        }
+    zoznam_ponuk.append(ponuka)
+
+        
+with open('som_zaciatocnik_v_pythone.json', 'w', encoding='utf-8') as f:
+    json.dump(zoznam_ponuk, f, ensure_ascii=False, indent=4)
