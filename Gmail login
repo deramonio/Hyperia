@@ -1,0 +1,27 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import undetected_chromedriver as uc
+from time import sleep
+
+username = "Email alebo tel. cislo"
+password = "heslo"
+
+url = "https://www.gmail.com"
+driver = uc.Chrome(use_subprocess=True)
+
+def login():
+    driver.get(url)
+    driver.find_element(By.ID, "identifierId").send_keys(username)
+    sleep(2)
+    driver.find_element(By.ID, "identifierNext").click()
+    sleep(1)
+    driver.find_element(By.NAME, "Passwd").send_keys(password)
+    sleep(2)
+    driver.find_element(By.ID, "passwordNext").click()
+
+login()
+print("Úspešne prihlásené")
+sleep(10)
+driver.quit()
+
+
