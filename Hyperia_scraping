@@ -36,5 +36,5 @@ for url in urls:
     zoznam_ponuk.append(ponuka)
 
         
-with open('som_zaciatocnik_v_pythone.json', 'w', encoding='utf-8') as f:
+with open('ponuky.json', 'w', encoding='utf-8') as f:
     json.dump(zoznam_ponuk, f, ensure_ascii=False, indent=4)
